@@ -1,5 +1,5 @@
-import { ethers } from 'ethers';
-import rlp from 'rlp';
+const { ethers } = require('ethers');
+const rlp = require('rlp');
 
 // Example EOA address and nonce (replace with your data)
 const senderAddress = '0x6A4481Eb81B9772b992aE58c429d508F5273b823';

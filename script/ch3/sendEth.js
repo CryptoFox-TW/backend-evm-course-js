@@ -24,21 +24,20 @@ async function sendEther() {
     const nonce = await web3.eth.getTransactionCount(senderAddress);
     console.log('Nonce:', nonce);
 
+    const gasPrice = await web3.eth.getGasPrice();
+    console.log('Gas Price:', gasPrice);
+
     // Create the transaction object
     const tx = {
       from: senderAddress,
       to: recipientAddress,
       value: web3.utils.toWei(amountInEther, 'ether'), // Convert Ether amount to wei
       gas: 21000, // Gas limit for a standard ETH transfer
+      gasPrice: gasPrice, // Gas price in wei
       nonce: nonce,
       chainId: 11155111, // Mainnet chain ID (use 5 for Goerli, 11155111 for Sepolia)
     };
     console.log('Transaction:', tx);
-
-    // Estimate the gas price
-    const gasPrice = await web3.eth.getGasPrice();
-    console.log('Gas Price:', gasPrice);
-    tx.gasPrice = gasPrice;
 
     // Sign the transaction
     const signedTx = await web3.eth.accounts.signTransaction(tx, privateKey);

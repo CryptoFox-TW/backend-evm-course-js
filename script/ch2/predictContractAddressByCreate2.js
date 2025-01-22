@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+const { ethers } = require('ethers');
 
 // Uniswap V2 constants
 const FACTORY_ADDRESS = '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'; // Uniswap V2 Factory address

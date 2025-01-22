@@ -1,13 +1,13 @@
-console.log('Here');
 /*
  * ---------------------------------------------------
  * Phrase1: Generate a random private key
  * ---------------------------------------------------
  */
-import crypto from 'crypto';
+const crypto = require('crypto');
 
 let privateKey =
-  '2024c4b23f15b34547c7c5feaae4f7b53ce9e937cb3b0f1b2f347178c46cfda3';
+  'bed4c077eaf218a0037d44f3caa5e3eaa130a3ff17a129241bb8a3bf4b410b3a';
+// '2024c4b23f15b34547c7c5feaae4f7b53ce9e937cb3b0f1b2f347178c46cfda3';
 // let privateKey = crypto.randomBytes(32).toString('hex');
 console.log('PrivateKey:', appendHexPrefix(privateKey));
 
@@ -16,7 +16,7 @@ console.log('PrivateKey:', appendHexPrefix(privateKey));
  * Phrase2: Generate a public key from the private key
  * ---------------------------------------------------
  */
-import EC from 'elliptic';
+const EC = require('elliptic');
 const secp256k1 = new EC.ec('secp256k1');
 
 const keyPair = secp256k1.keyFromPrivate(privateKey, 'hex');
@@ -32,11 +32,11 @@ console.log('Compressed Public Key:', appendHexPrefix(compressedPublicKey));
  * ---------------------------------------------------
  */
 
-import pkg from 'js-sha3';
+const pkg = require('js-sha3');
 const { keccak_256 } = pkg;
-import { ethers } from 'ethers';
+const { ethers } = require('ethers');
 
-// Remove the '04' prefix
+// Remove the '04' prefix (1 bytes)
 const publicKeyBuffer = Buffer.from(uncompressedPublicKey.slice(2), 'hex');
 
 // Hash the public key with Keccak-256
