@@ -26,7 +26,7 @@ async function main() {
     to: '0x26aDF778004B8d449a5bE0192A2DcF86acb13bE5', // Replace with recipient address
     value: ethers.parseEther('0.01'), // Amount in ETH
     nonce: nonce,
-    gasLimit: ethers.toBigInt(22000), // Standard gas limit for ETH transfer
+    gasLimit: ethers.toBigInt(21000), // Standard gas limit for ETH transfer
     maxPriorityFeePerGas: maxPriorityFeePerGas,
     maxFeePerGas: maxFeePerGas,
     type: 2, // EIP-1559 transaction type
@@ -43,6 +43,7 @@ async function main() {
 
   // Wait for confirmation
   const receipt = await txResponse.wait();
+  console.log(`Transaction receipt: ${JSON.stringify(receipt, null, 2)}`);
   console.log(`Transaction confirmed in block: ${receipt.blockNumber}`);
 }
 
