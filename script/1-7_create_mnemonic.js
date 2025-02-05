@@ -1,21 +1,21 @@
-const { ethers } = require('ethers');
+const { ethers, Wallet } = require('ethers');
 
 /*
  * ---------------------------------------------------
- * Phrase1: Generate a wallet
+ * Phrase1: Generate mnemonics
  * ---------------------------------------------------
  */
-// const wallet = ethers.Wallet.createRandom();
-const wallet = new ethers.Wallet(
-  '0xbed4c077eaf218a0037d44f3caa5e3eaa130a3ff17a129241bb8a3bf4b410b3a'
-);
+const entropy = ethers.randomBytes(32);
+const mnemonic = ethers.Mnemonic.fromEntropy(entropy);
+console.log('Generated Mnemonic:', mnemonic);
+
+/*
+ * ---------------------------------------------------
+ * Phrase2: Generate a wallet from the mnemonic
+ * ---------------------------------------------------
+ */
+const wallet = Wallet.fromPhrase(mnemonic.phrase);
 console.log('Wallet:', wallet);
-
-/*
- * ---------------------------------------------------
- * Phrase2: Get the private key, public key, and address
- * ---------------------------------------------------
- */
 console.log('Private Key:', wallet.privateKey);
 console.log('Public Key:', wallet.publicKey);
 console.log('Address:', wallet.address);
