@@ -4,7 +4,7 @@ const { ethers } = require('ethers');
 // Load environment variables
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
 const RPC_URL = process.env.SEPOLIA_RPC_URL;
-const CONTRACT_ADDRESS = '0x0a21e4632519Fa9639d051E5dFF3Da9D20C41278'; // Ensure this is set in .env
+const CONTRACT_ADDRESS = '0x60c8EF0A8eD426f88555415e5553FCc640711147'; // Ensure this is set in .env
 
 // Contract ABI
 const CONTRACT_ABI = [
@@ -41,12 +41,12 @@ async function main() {
     await tx1.wait();
     console.log('✅ Number updated successfully!');
 
-    // 4️⃣ Increment number
-    console.log('Incrementing number...');
-    const tx2 = await contract.increment();
-    console.log(`increment() Transaction Hash: ${tx2.hash}`);
-    await tx2.wait();
-    console.log('✅ Number incremented successfully!');
+    // // 4️⃣ Increment number
+    // console.log('Incrementing number...');
+    // const tx2 = await contract.increment();
+    // console.log(`increment() Transaction Hash: ${tx2.hash}`);
+    // await tx2.wait();
+    // console.log('✅ Number incremented successfully!');
 
     // 5️⃣ Read updated number
     const updatedNum = await contract.number();
