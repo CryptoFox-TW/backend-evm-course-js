@@ -28,7 +28,6 @@ provider.on('block', async (blockNumber) => {
       try {
         const tx = await provider.getTransaction(txHash);
         if (!tx) continue;
-
         console.log(`📌 交易哈希: ${tx.hash}`);
         console.log(`🔹 發送者: ${tx.from}`);
         console.log(`🔹 接收者: ${tx.to}`);
@@ -37,7 +36,6 @@ provider.on('block', async (blockNumber) => {
           `⛽ 燃料價格: ${ethers.formatUnits(tx.gasPrice, 'gwei')} Gwei`
         );
         console.log('----------------------------');
-
         // 延遲 1 秒，避免過載
         await sleep(1000);
       } catch (txError) {
