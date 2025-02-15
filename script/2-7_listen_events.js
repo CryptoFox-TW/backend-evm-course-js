@@ -12,20 +12,21 @@ console.log(`🔍 監聽 ${TOKEN_ADDRESS} 的 Transfer 事件...`);
 
 wsProvider.on(
   {
-    address: TOKEN_ADDRESS,
+    address: [TOKEN_ADDRESS, '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'],
     topics: [ethers.id('Transfer(address,address,uint256)')],
   },
   (log, event) => {
+    console.log('log:', JSON.stringify(log, null, 2));
     try {
-      console.log(JSON.stringify(log, null, 2));
-
+      console.log('log:', JSON.stringify(log, null, 2));
       const blockNumber = log.blockNumber;
       const txHash = log.transactionHash;
+      const contractAddress = log.address;
       const from = ethers.getAddress('0x' + log.topics[1].slice(26));
       const to = ethers.getAddress('0x' + log.topics[2].slice(26));
       const value = ethers.toBigInt(log.data);
-
       console.log(`📌 在區塊 ${blockNumber} 檢測到 Transfer 事件`);
+      console.log(`📦 合約: ${contractAddress}`);
       console.log(`🔹 來源: ${from}`);
       console.log(`🔹 目的: ${to}`);
       console.log(`💰 數量: ${ethers.formatUnits(value, 6)} Tokens`);
