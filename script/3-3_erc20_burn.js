@@ -24,8 +24,18 @@ const privateKey = process.env.PRIVATE_KEY;
 
 const tokenContract = new web3.eth.Contract(ERC20ABI, tokenAddress);
 
+// 取得餘額
+async function getBalance(address) {
+  const balance = await tokenContract.methods.balanceOf(address).call();
+  return web3.utils.fromWei(balance, 'ether');
+}
+
 async function burnTokens(amount) {
   try {
+    console.log('🔥 Burn 開始...');
+    const balanceBefore = await getBalance(senderAddress);
+    console.log(`💰 Burn 前餘額: ${balanceBefore} tokens`);
+
     const burnData = tokenContract.methods.burn(amount).encodeABI();
 
     // 並行獲取必要資訊，提高效率
@@ -66,6 +76,9 @@ async function burnTokens(amount) {
       signedTx.rawTransaction
     );
     Printer.print('Transaction Receipt', receipt);
+
+    const balanceAfter = await getBalance(senderAddress);
+    console.log(`✅ Burn 後餘額: ${balanceAfter} tokens`);
 
     return receipt;
   } catch (error) {
