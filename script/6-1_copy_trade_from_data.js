@@ -13,7 +13,7 @@ const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
 const methodSelectors = {
   '0x7ff36ab5': copySwapExactETHForTokensTx,
-  // '0x18cbafe5': copySwapExactTokensForETHTx,
+  '0x18cbafe5': copySwapExactTokensForETHTx,
 
   // Add more method selectors here ...
 };
@@ -60,6 +60,35 @@ async function copySwapExactETHForTokensTx(tx) {
   }
 }
 
+async function copySwapExactTokensForETHTx(tx, provider) {
+  const decoded = iUniswapV2Router.decodeFunctionData(
+    'swapExactTokensForETH',
+    tx.data
+  );
+  console.log('decoded', decoded);
+
+  // get token balance
+  const tokenAddress = decoded.path[0];
+  const tokenContract = new ethers.Contract(tokenAddress, ERC20ABI, provider);
+
+  const tokenBalance = await tokenContract.balanceOf(wallet.address);
+  let amountIn = decoded.amountIn;
+
+  if (tokenBalance < amountIn) {
+    amountIn = tokenBalance;
+  }
+
+  const txData = iUniswapV2Router.encodeFunctionData(tx.data.slice(0, 10), [
+    amountIn,
+    decoded.amountOutMin,
+    decoded.path,
+    wallet.address,
+    Math.floor(Date.now() / 1000) + 600,
+  ]);
+
+  return txData;
+}
+
 async function main() {
   const txHash =
     '0xe25f4609a96de9368d372d8fc3fd2c3c43dc3f450fc36d4e87fb5a37209e99ba';
@@ -82,43 +111,3 @@ async function main() {
 }
 
 main();
-
-// async function copySwapExactTokensForETHTx(tx, provider) {
-//   const decoded = iUniswapV2Router.decodeFunctionData(
-//     'swapExactTokensForETH',
-//     tx.data
-//   );
-//   return executeCopyTrade(tx, decoded, userAddress, provider);
-// }
-
-// async function executeCopyTrade(originalTx, decoded, userAddress, provider) {
-//   const tokenIn = decoded.path ? decoded.path[0] : decoded.tokenIn;
-//   const tokenContract = new ethers.Contract(
-//     tokenIn,
-//     ['function balanceOf(address) view returns (uint256)'],
-//     provider
-//   );
-//   const balance = await tokenContract.balanceOf(userAddress);
-//   let amountIn = decoded.amountIn || originalTx.value;
-//   let amountOutMin = decoded.amountOutMin || decoded.amountOutMinimum;
-
-//   if (balance.lt(amountIn)) {
-//     const ratio = balance.mul(ethers.BigNumber.from(10).pow(18)).div(amountIn);
-//     amountIn = balance;
-//     amountOutMin = amountOutMin
-//       .mul(ratio)
-//       .div(ethers.BigNumber.from(10).pow(18));
-//   }
-
-//   const txData = iUniswapV2Router.encodeFunctionData(
-//     originalTx.data.slice(0, 10),
-//     [amountIn, amountOutMin, ...Object.values(decoded).slice(2)]
-//   );
-
-//   return signer.sendTransaction({
-//     to: originalTx.to,
-//     data: txData,
-//     value: originalTx.value,
-//     gasLimit: ethers.utils.hexlify(300000),
-//   });
-// }

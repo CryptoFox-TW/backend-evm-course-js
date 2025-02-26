@@ -11,8 +11,9 @@ const provider = new ethers.WebSocketProvider(process.env.SEPOLIA_HTTP_RPC_URL);
   const receipt = await provider.getTransactionReceipt(txHash);
 
   for (const log of receipt.logs) {
-    const ifaceV2 = new ethers.Interface(UniswapV2PairABI);
+    const ifaceV2 = new ethers.Interface(UniswapV2RouterABI);
     const decoded = ifaceV2.parseLog(log);
+
     console.log('Decoded Swap Data:', decoded);
   }
 })();
