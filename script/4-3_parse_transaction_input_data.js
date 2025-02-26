@@ -6,12 +6,12 @@ const provider = new ethers.WebSocketProvider(process.env.SEPOLIA_WS_RPC_URL);
 
 (async function main() {
   const txHash =
-    '0x7617ae6c57fb8763e6655085fa33e98a644efc4dff879f13b430d6cdedb59678';
+    '0xe25f4609a96de9368d372d8fc3fd2c3c43dc3f450fc36d4e87fb5a37209e99ba';
   const tx = await provider.getTransaction(txHash);
 
   console.log('Transaction Input Data:', tx.data);
 
-  // Method 1: Decode using interface parseTransaction
+  // // Method 1: Decode using interface parseTransaction
   const ifaceV2 = new ethers.Interface(UniswapV2RouterABI);
   let decoded = ifaceV2.parseTransaction({
     data: tx.data,
@@ -21,9 +21,9 @@ const provider = new ethers.WebSocketProvider(process.env.SEPOLIA_WS_RPC_URL);
 
   // Method 2: Decode using interface decodeFunctionData
   const data = tx.data;
-  const methodId = data.slice(0, 10);
-  console.log('Method ID:', methodId);
-  const methodSignature = ifaceV2.getFunction(methodId);
+  const methodSelector = data.slice(0, 10);
+  console.log('Method Selector:', methodSelector);
+  const methodSignature = ifaceV2.getFunction(methodSelector);
   console.log('Method Signature:', methodSignature);
   const decodedData = ifaceV2.decodeFunctionData(methodSignature, data);
   console.log('Decoded Data:', decodedData);
