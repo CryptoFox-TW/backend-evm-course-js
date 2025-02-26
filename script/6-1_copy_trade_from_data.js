@@ -36,24 +36,16 @@ async function copySwapExactETHForTokensTx(tx) {
       tx.data
     );
     console.log('decoded', decoded);
-    console.log('tx.value', tx.value.toString());
-
     const ethBalance = await provider.getBalance(wallet.address);
-    console.log('ethBalance', ethBalance.toString());
 
     let txValue = ethBalance;
     let amountOutMin = decoded.amountOutMin;
     let deadline = Math.floor(Date.now() / 1000) + 600; // 10 minutes
 
-    tx.value = BigInt('100000000000000000000');
-
     if (ethBalance <= tx.value) {
       txValue = ethBalance - ethers.parseEther('0.001');
       amountOutMin = (decoded.amountOutMin * txValue) / tx.value;
     }
-
-    console.log('txValue', txValue.toString());
-    console.log('amountOutMin', amountOutMin.toString());
 
     const txData = iUniswapV2Router.encodeFunctionData(tx.data.slice(0, 10), [
       amountOutMin,
@@ -74,6 +66,19 @@ async function main() {
   const tx = await provider.getTransaction(txHash);
 
   const txData = await copyTransaction(tx);
+  const feeData = await provider.getFeeData();
+
+  const txResponse = await wallet.sendTransaction({
+    to: tx.to,
+    data: txData,
+    value: tx.value,
+    maxPriorityFeePerGas: feeData.maxPriorityFeePerGas,
+    maxFeePerGas: feeData.maxFeePerGas,
+    gasLimit: 300000,
+  });
+
+  const receipt = await txResponse.wait();
+  console.log(`Transaction receipt: ${JSON.stringify(receipt, null, 2)}`);
 }
 
 main();
